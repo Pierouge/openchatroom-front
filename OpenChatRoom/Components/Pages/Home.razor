@@ -8,7 +8,7 @@
     protected override void OnInitialized()
     {
         var cookie = HttpContextAccessor.HttpContext?.Request.Cookies["LoginCookie"];
-        if (cookie == null) Navigation.NavigateTo("/login", false);
+        if (cookie == null) Navigation.NavigateTo("/connect", false);
         else{
             
         }
