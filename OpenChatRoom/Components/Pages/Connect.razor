@@ -1,16 +1,55 @@
 @page "/connect"
 @layout Layout.EmptyLayout
+@rendermode InteractiveServer
+@inject IConfiguration IConfiguration
+
 <div class="card login-card">
-    <h1 class="center-text">Login</h1>
+    <h1 class="center-text">Server</h1>
     <form class="center center-text">
+        @if (response == conenctionResponse.noServer){
+            <p class="text-danger">Error: Please type in a server.</p>
+        }
+        @if (response == conenctionResponse.unknownHost){
+            <p class="text-danger">Error: Impossible to find such server.</p>
+        }
+        @if (response == conenctionResponse.connectionSuccess){
+            <p class>Connection successful!</p>
+        }
         <label>Server</label>
-        <input id="server" class="center" type="text" name="Server">
+        <input id="server" class="center" type="text" name="Server" @bind=server>
     </form>
-    <button class="center btn btn-primary" @onclick="connect">Connect</button>
+    <button class="center btn btn-primary" type="button" @onclick="connect">Connect</button>
 </div>
 
 @code {
+    private string server = string.Empty;
+    bool UnkownHost, noServer, connectionSuccess, unknownException = false;
+    private enum conenctionResponse{
+        noResponse,
+        unknownHost,
+        noServer,
+        connectionSuccess,
+        unknownException
+    }
+    private conenctionResponse response = conenctionResponse.noResponse;
     private void connect(){
-        
+        if (String.IsNullOrWhiteSpace(server)) {
+            response = conenctionResponse.noServer;
+        }
+        else{
+            LoginCookie loginCookie = new LoginCookie(IConfiguration,server);
+            switch (loginCookie.checkConnection()){
+                case LoginCookie.ResponseCodes.ResponseOK:
+                    response = conenctionResponse.connectionSuccess;
+                    // TODO: Implement Cookie creation logic here
+                    break;
+                case LoginCookie.ResponseCodes.UnknownHost:
+                    response = conenctionResponse.unknownHost;
+                    break;
+                case LoginCookie.ResponseCodes.UnknownException:
+                    response = conenctionResponse.unknownException;
+                    break;
+            }
+        }
     }
 }
