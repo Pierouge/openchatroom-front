@@ -2,6 +2,8 @@
 @layout Layout.EmptyLayout
 @rendermode InteractiveServer
 @inject IConfiguration IConfiguration
+@inject NavigationManager Navigation
+@inject IHttpContextAccessor HttpContextAccessor
 
 <div class="card login-card">
     <h1 class="center-text">Server</h1>
@@ -42,6 +44,7 @@
                 case LoginCookie.ResponseCodes.ResponseOK:
                     response = conenctionResponse.connectionSuccess;
                     // TODO: Implement Cookie creation logic here
+                    Navigation.NavigateTo("/login", false);
                     break;
                 case LoginCookie.ResponseCodes.UnknownHost:
                     response = conenctionResponse.unknownHost;
